@@ -6,11 +6,12 @@ import Products from "./Products";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const localStateData = localStorage.getItem("stateData");
     if (localStateData) {
+      setLoading(true);
       const StateData = JSON.parse(localStateData);
       dispatch(stateUpdate(StateData));
       setLoading(false);
@@ -20,7 +21,7 @@ const Home = () => {
   return (
     <>
       {loading ? (
-        <div>Loading...</div>
+        <div className="flex justify-center">Loading...</div>
       ) : (
         <div className="bg-gray-50 h-full md:h-screen">
           <div className="grid place-items-center">
