@@ -10,8 +10,14 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    stateUpdate: (state, action) => {
+      const { cartProducts, totalItem, totalPrice } = action.payload;
+      state.cartProducts = cartProducts;
+      state.totalItem = totalItem;
+      state.totalPrice = totalPrice;
+    },
     increment: (state, action) => {
-      const { id, title, price, totalQuantity } = action.payload;
+      const { id, title, price, totalQuantity, moq } = action.payload;
       const sameProduct = state.cartProducts.find(
         (product) => product.id === id
       );
@@ -20,12 +26,15 @@ const cartSlice = createSlice({
           id,
           title,
           price,
-          totalQuantity: totalQuantity - 1,
-          quantity: 1,
+          totalQuantity: totalQuantity - moq,
+          quantity: moq,
+          moq,
         });
 
-        state.totalItem = state.totalItem + 1;
-        state.totalPrice = state.totalPrice + price;
+        state.totalItem = state.totalItem + moq;
+        const moqPrice = price * moq;
+        state.totalPrice = state.totalPrice + moqPrice;
+        localStorage.setItem("stateData", JSON.stringify(state));
       } else {
         const updatedProducts = state.cartProducts.map((product) => {
           if (product.id === id) {
@@ -35,6 +44,7 @@ const cartSlice = createSlice({
               price,
               totalQuantity: totalQuantity - 1,
               quantity: product.quantity + 1,
+              moq,
             };
           } else {
             return product;
@@ -44,10 +54,11 @@ const cartSlice = createSlice({
         state.cartProducts = [...updatedProducts];
         state.totalItem = state.totalItem + 1;
         state.totalPrice = state.totalPrice + price;
+        localStorage.setItem("stateData", JSON.stringify(state));
       }
     },
     decrement: (state, action) => {
-      const { id, title, price } = action.payload;
+      const { id, title, price, moq } = action.payload;
       const updatedProducts = state.cartProducts.map((product) => {
         if (product.id === id) {
           return {
@@ -56,6 +67,7 @@ const cartSlice = createSlice({
             price,
             totalQuantity: product.totalQuantity + 1,
             quantity: product.quantity - 1,
+            moq,
           };
         } else {
           return product;
@@ -65,6 +77,7 @@ const cartSlice = createSlice({
       state.cartProducts = [...updatedProducts];
       state.totalItem = state.totalItem - 1;
       state.totalPrice = state.totalPrice - price;
+      localStorage.setItem("stateData", JSON.stringify(state));
     },
     remove: (state, action) => {
       const { id, price, quantity } = action.payload;
@@ -75,9 +88,10 @@ const cartSlice = createSlice({
       state.cartProducts = [...filteredProducts];
       state.totalItem = state.totalItem - quantity;
       state.totalPrice = state.totalPrice - price * quantity;
+      localStorage.setItem("stateData", JSON.stringify(state));
     },
   },
 });
 
-export const { increment, decrement, remove } = cartSlice.actions;
+export const { stateUpdate, increment, decrement, remove } = cartSlice.actions;
 export default cartSlice.reducer;

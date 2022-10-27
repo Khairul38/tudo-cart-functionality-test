@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { increment } from "../features/cart/cartSlice";
 
 const ProductItem = ({ product }) => {
-  const { id, title, price } = product;
+  const { id, title, price, moq } = product;
   const [totalQuantity, setTotalQuantity] = useState(product.totalQuantity);
   const dispatch = useDispatch();
   const { cartProducts } = useSelector((state) => state.cart);
@@ -17,9 +17,9 @@ const ProductItem = ({ product }) => {
     }
   }, [id, product.totalQuantity, cartProducts]);
 
-  const handleIncrement = (id, title, price, totalQuantity) => {
+  const handleIncrement = (id, title, price, totalQuantity, moq) => {
     if (totalQuantity > 0) {
-      dispatch(increment({ id, title, price, totalQuantity }));
+      dispatch(increment({ id, title, price, totalQuantity, moq }));
     }
   };
 
@@ -34,13 +34,15 @@ const ProductItem = ({ product }) => {
             ) : (
               <span className="text-red-600 text-m">Stock Out</span>
             )}
-            )
+            ), (MOQ - {moq} Items)
           </p>
           <p className="text-gray-400 text-base">$ {price}</p>
         </div>
         <div className="text-lg font-semibold">
           <button
-            onClick={() => handleIncrement(id, title, price, totalQuantity)}
+            onClick={() =>
+              handleIncrement(id, title, price, totalQuantity, moq)
+            }
             className="focus:outline-none bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 px-2 rounded-full inline-flex items-center"
           >
             <svg

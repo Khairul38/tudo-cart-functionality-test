@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { decrement, increment, remove } from "../features/cart/cartSlice";
 
 const CartItem = ({ product }) => {
-  const { id, title, price, quantity, totalQuantity } = product;
+  const { id, title, price, quantity, totalQuantity, moq } = product;
   const dispatch = useDispatch();
 
   const handleIncrement = (id, title, price, totalQuantity) => {
@@ -12,9 +12,9 @@ const CartItem = ({ product }) => {
     }
   };
 
-  const handleDecrement = (id, title, price, quantity) => {
-    if (quantity > 1) {
-      dispatch(decrement({ id, title, price }));
+  const handleDecrement = (id, title, price, quantity, moq) => {
+    if (quantity > moq) {
+      dispatch(decrement({ id, title, price, moq }));
     } else {
       dispatch(remove({ id, price, quantity }));
     }
@@ -32,7 +32,7 @@ const CartItem = ({ product }) => {
       <div className="text-lg py-2">
         <div className="flex flex-row space-x-2 w-full items-center rounded-lg">
           <button
-            onClick={() => handleDecrement(id, title, price, quantity)}
+            onClick={() => handleDecrement(id, title, price, quantity, moq)}
             className="focus:outline-none bg-purple-700 hover:bg-purple-800 text-white font-bold py-1 px-1 rounded-full inline-flex items-center"
           >
             <svg
