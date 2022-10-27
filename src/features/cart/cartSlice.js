@@ -32,8 +32,7 @@ const cartSlice = createSlice({
         });
 
         state.totalItem = state.totalItem + moq;
-        const moqPrice = price * moq;
-        state.totalPrice = state.totalPrice + moqPrice;
+        state.totalPrice = state.totalPrice + price * moq;
         localStorage.setItem("stateData", JSON.stringify(state));
       } else {
         const updatedProducts = state.cartProducts.map((product) => {

@@ -6,9 +6,9 @@ const CartItem = ({ product }) => {
   const { id, title, price, quantity, totalQuantity, moq } = product;
   const dispatch = useDispatch();
 
-  const handleIncrement = (id, title, price, totalQuantity) => {
+  const handleIncrement = (id, title, price, totalQuantity, moq) => {
     if (totalQuantity > 0) {
-      dispatch(increment({ id, title, price, totalQuantity }));
+      dispatch(increment({ id, title, price, totalQuantity, moq }));
     }
   };
 
@@ -52,7 +52,9 @@ const CartItem = ({ product }) => {
           </button>
           <p>{quantity}</p>
           <button
-            onClick={() => handleIncrement(id, title, price, totalQuantity)}
+            onClick={() =>
+              handleIncrement(id, title, price, totalQuantity, moq)
+            }
             className="focus:outline-none bg-purple-700 hover:bg-purple-800 text-white font-bold py-1 px-1 rounded-full inline-flex items-center"
           >
             <svg
